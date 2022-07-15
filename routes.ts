@@ -1,6 +1,6 @@
 import express from 'express';
 import { checkAndHoldBalance } from './currencies';
-
+import { DataItem } from "arbundles";
 const router = express.Router();
 
 
@@ -12,19 +12,20 @@ router.post(
   // Get currency from request parameter
   console.log("queue status = ", req.app.locals.queue);
   const currency = req.params.currency;
+  console.log("currency used = ", currency);
   // check if currency stored with bundlr is sufficient
-  const dataItem = req.body;
+  const dataItem = new DataItem(req.body);
   console.log(dataItem);
+  dataItem.id = dataItem.id;
   const sufficient = checkAndHoldBalance(currency, dataItem);
   if (sufficient) {
     // if sufficient add to bundling queue
     // TODO: remove logging statement
-    console.log(dataItem);
     req.app.locals.queue.push(dataItem);
-    res.sendStatus(200);
+    res.status(201).json({ id: dataItem.id });
   } else {
     // log something if not sufficient balance
-    console.log(dataItem.txid, " failed because of insufficient funds with bundlr");
+    console.log(dataItem.id, " failed because of insufficient funds with bundlr");
     // respond with status code that indicates insufficient payment
     res.sendStatus(402);
   }
