@@ -1,7 +1,7 @@
 import Arweave from "arweave/node";
 
 // const arweaveClient = Arweave.init({ host: 'arweave.net', port: 443, protocol: 'https' });
-const arweaveClient = Arweave.init({ host: 'localhost', port: 1984, protocol: 'http' });
+const arweaveClient = Arweave.init({ host: 'arweave.net', port: 443, protocol: 'https' });
 
 arweaveClient.api.config.timeout = 1000 * 60 * 1.5;
 
