@@ -6,7 +6,9 @@ import { txRouter } from './routes';
 import { ToadScheduler, SimpleIntervalJob, Task } from 'toad-scheduler';
 
 const bundler_wallet_path = process.argv[2];
-var privateKey = JSON.parse(fs.readFileSync(bundler_wallet_path));
+const privateKey =
+  JSON.parse(fs.readFileSync(bundler_wallet_path).toString()) || {};
+
 const signer = new signers.ArweaveSigner(privateKey);
 
 const app = express();
@@ -24,10 +26,11 @@ const job = new SimpleIntervalJob({ seconds: 5 }, task);
 
 scheduler.addSimpleIntervalJob(job);
 
-function bundleTxnsAndSend() {
+async function bundleTxnsAndSend() {
   console.log('running scheduled bundlensend with queue = ', app.locals.queue);
   const bundles = [];
-  while (!(app.locals.queue.length == 0)) {
+
+  while (app.locals.queue.length > 0) {
     bundles.push(app.locals.queue.splice(0, BUNDLE_SIZE));
   }
 
