@@ -23,9 +23,10 @@ const writeBundleToArweave = async (
     tx.addTag('Bundle-Version', '2.0.0');
     tx.addTag('Content-Type', 'application/octet-stream');
 
-    tags?.forEach((tag) => {
+    tags.forEach((tag) => {
       tx.addTag(tag.name, tag.value);
     });
+
     await arweaveClient.transactions.sign(tx, privateKey);
     console.log('🚀 ~ writeBundleToArweave ~ signed', tx.id);
     let uploader = await arweaveClient.transactions.getUploader(tx);

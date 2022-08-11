@@ -1,6 +1,7 @@
 import express from 'express';
 import { checkAndHoldBalance } from './currencies';
 import { DataItem } from 'arbundles';
+
 const router = express.Router();
 
 router.post('/tx/:currency', function (req, res) {
@@ -14,7 +15,9 @@ router.post('/tx/:currency', function (req, res) {
   const dataItem = new DataItem(req.body);
   console.log(dataItem);
   dataItem.id = dataItem.id;
+
   const sufficient = checkAndHoldBalance(currency, dataItem);
+
   if (sufficient) {
     // if sufficient add to bundling queue
     // TODO: remove logging statement
