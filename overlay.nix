@@ -12,7 +12,7 @@ final: prev: {
     '';
 
     docker = prev.dockerTools.buildLayeredImage {
-      name = "hello-world";
+      name = "bundler";
       tag = "latest";
       created = "now";
        config = {

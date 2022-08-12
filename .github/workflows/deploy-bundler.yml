@@ -3,8 +3,7 @@ name: 'bundler-ecr'
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-env:
-  IMAGE_NAME: bittorrent-tracker
+
 jobs:
   build-and-push:
     name: 'Build and Push to ECR'
@@ -29,6 +28,13 @@ jobs:
         run: |
           nix -L build .#import-blocks-docker
           cat result | docker load
+
+      - name: Docker login, tag and push image
+        id: build-image
+        run: |
+          aws ecr get-login-password | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
+          docker tag ${{ env.IMAGE_NAME }}-ecr "${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}-ecr:${{ github.sha }}"
+          docker push "${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}-ecr:${{ github.sha }}"
 
       - name: Login to Amazon ECR
         id: login-ecr
