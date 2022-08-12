@@ -1,7 +1,7 @@
 terraform {
 
   backend "s3" {
-    bucket         = "meta-bundler-terraform"
+    bucket         = "bundler-terraform"
     key            = "terraform"
     region         = "us-east-1"
     dynamodb_table = "terraform-lock"
@@ -19,8 +19,8 @@ provider "aws" {
   region = "us-east-1"
 }
 
-resource "aws_s3_bucket" "state_bucket" {
-  bucket = "meta-bundler-terraform"
+resource "aws_s3_bucket" "tf_state_bucket" {
+  bucket = "bundler-terraform"
 }
 
 resource "aws_dynamodb_table" "terraform_state_lock" {
