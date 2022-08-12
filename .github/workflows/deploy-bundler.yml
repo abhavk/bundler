@@ -11,7 +11,7 @@ jobs:
     env:
       ACCOUNT_ID: '384386061638'
       AWS_REGION: 'us-east-1'
-      IMAGE_NAME: meta-bundler-ecr
+      IMAGE_NAME: bundler-ecr
       ECR_REGISTRY: 384386061638.dkr.ecr.us-east-1.amazonaws.com
     steps:
       - name: Checkout
@@ -26,28 +26,12 @@ jobs:
 
       - name: Docker build
         run: |
-          nix -L build .#import-blocks-docker
+          nix -L build .#x86_64-linux.bundler-docker
           cat result | docker load
 
       - name: Docker login, tag and push image
         id: build-image
         run: |
           aws ecr get-login-password | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
-          docker tag ${{ env.IMAGE_NAME }}-ecr "${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}-ecr:${{ github.sha }}"
-          docker push "${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}-ecr:${{ github.sha }}"
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build and push container image
-        uses: docker/build-push-action@v3
-        with:
-          context: 'docker-bittorrent-tracker'
-          file: 'docker-bittorrent-tracker/Dockerfile'
-          build-args: |
-            VERSION=v9.19.0
-          push: true
-          tags: |
-            ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}-ecr:latest,
-            ${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}-ecr:${{ github.sha }}
+          docker tag ${{ env.IMAGE_NAME }} "${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          docker push "${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"

@@ -5,6 +5,14 @@ final: prev: {
     package = final.buildNpmPackage {
       src = ./.;
       npmBuild = "npm run build";
+      extraEnvVars = {
+        PYTHON = "${prev.python3}/bin/python";
+      };
+      buildInputs = [
+        prev.nodePackages.node-gyp
+        prev.nodePackages.node-pre-gyp
+        prev.sqlite
+      ];
     };
 
     serve = prev.writeShellScriptBin "serve" ''

@@ -1,5 +1,5 @@
 {
-  "name": "bundling_server",
+  "name": "bundler",
   "version": "1.0.0",
   "description": "An open source implementation of a bundling server that accepts DataItem entries (according to ANS104), bundles many DataItem entries together and sends them as a bundle to the Arweave network.",
   "main": "index.js",
@@ -9,10 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettify": "prettier --write ."
   },
-  "keywords": [
-    "arweave",
-    "bundlr"
-  ],
+  "keywords": ["arweave", "bundlr"],
   "author": "abhavk",
   "license": "ISC",
   "devDependencies": {
@@ -24,9 +21,11 @@
     "@bundlr-network/client": "^0.5.9",
     "@types/node": "^13.13.4",
     "arbundles": "^0.6.13",
-    "arlocal": "^1.1.45",
     "arweave": "^1.10.23",
     "express": "^4.17.2",
     "toad-scheduler": "^1.6.0"
+  },
+  "overrides": {
+    "avsc": "^5.7.4"
   }
 }
