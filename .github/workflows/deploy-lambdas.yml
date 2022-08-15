@@ -32,8 +32,16 @@ jobs:
           zip -r -y import-data-items.zip ./dist
           aws s3 cp import-data-items.zip s3://arweave-lambda-deployments/import-data-items.zip
 
-          aws lambda update-function-code \
-            --publish \
-            --function-name import-data-items \
-            --s3-bucket arweave-lambda-deployments \
-            --s3-key import-data-items.zip
+          LAMBDAS=$(aws lambda list-functions | jq -r '.Functions | map(.FunctionName) | .[]')
+
+          for l in $LAMBDAS; do
+            echo lambda $l
+            if [[ $l =~ ^import\-data.* ]];
+            then
+              aws lambda update-function-code \
+                --publish \
+                --function-name $l \
+                --s3-bucket arweave-lambda-deployments \
+                --s3-key import-data-items.zip
+            fi
+          done
