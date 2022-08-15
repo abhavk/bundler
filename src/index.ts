@@ -5,7 +5,7 @@ import log from './logger.js';
 import { bundleAndSignData, createData, signers } from 'arbundles';
 import { writeBundleToArweave } from './write.js';
 import { txRouter } from './routes.js';
-// import { ToadScheduler, SimpleIntervalJob, Task } from 'toad-scheduler';
+import { ToadScheduler, SimpleIntervalJob, Task } from 'toad-scheduler';
 
 const fsPromises = fs.promises;
 
@@ -21,7 +21,7 @@ const app = express();
 app.use(txRouter);
 
 // initialize queue as a global variable
-app.locals.queue = [];
+// app.locals.queue = [];
 
 // const scheduler = new ToadScheduler();
 const BUNDLE_SIZE = 1000;
@@ -60,6 +60,10 @@ async function start() {
 
   if (!fs.existsSync('/data-items/completed')) {
     await fsPromises.mkdir('/data-items/completed');
+  }
+
+  if (!fs.existsSync('/data-items/unbundled')) {
+    await fsPromises.mkdir('/data-items/unbundled');
   }
 
   log.info('starting bundler instance...');

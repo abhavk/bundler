@@ -94,3 +94,58 @@ EOF
     })
   }
 }
+
+resource "aws_iam_role" "lambda_job" {
+  name = "LambdaJob"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+
+  inline_policy {
+    name = "lambda_job_inline_policy"
+
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Action = [
+            "s3:*",
+            "sqs:*",
+            "dax:*",
+            "dynamodb:*",
+            "secretsmanager:GetSecretValue",
+            "secretsmanager:GetResourcePolicy",
+            "secretsmanager:GetSecretValue",
+            "secretsmanager:DescribeSecret",
+            "secretsmanager:ListSecretVersionIds",
+            "secretsmanager:ListSecrets",
+          ]
+          Effect   = "Allow"
+          Resource = "*"
+        },
+        {
+          Action = [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents"
+          ]
+          Resource = "arn:aws:logs:*:*:*"
+          Effect   = "Allow"
+        }
+      ]
+    })
+  }
+}

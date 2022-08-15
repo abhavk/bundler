@@ -10,18 +10,9 @@ import { checkAndHoldBalance } from './currencies.js';
 const router = express.Router();
 
 router.post('/tx/:currency', function (req, res) {
-  // TODO: remove This log
   log.info('REQUEST RECEIVED!');
-  // Get currency from request parameter
-  log.info('queue status = ', req.app.locals.queue);
   const currency = req.params.currency;
   log.info('currency used = ' + currency);
-  // check if currency stored with bundlr is sufficient
-  // const dataItem = new DataItem(req.body);
-  // log.info('dataItem', dataItem);
-  // dataItem.id = dataItem.id;
-
-  // const sufficient = checkAndHoldBalance(currency, dataItem);
 
   const tmpDataName = Date.now().toString() + uuid() + '.raw';
   const tmpDataPath = path.join('/data-items/incomplete/', tmpDataName);
@@ -35,7 +26,6 @@ router.post('/tx/:currency', function (req, res) {
   req.pipe(stream);
 
   stream.on('data', (chunk) => {
-    log.info('on steam.data', { chunk });
     inMemoryChunks.push(chunk);
   });
 
@@ -58,7 +48,7 @@ router.post('/tx/:currency', function (req, res) {
         log.info('Sufficient balance!', { currency, dataItemId: dataItem.id });
 
         fs.renameSync(tmpDataPath, doneDataPath);
-        res.status(200).send('Upload complete');
+        res.status(201).json({ id: dataItem.id });
       } else {
         log.warn('Insufficient balance!', {
           currency,
@@ -80,17 +70,6 @@ router.post('/tx/:currency', function (req, res) {
     res.sendStatus(500);
     fs.unlinkSync(tmpDataPath);
   });
-
-  // if (sufficient) {
-  //   // if sufficient add to bundling queue
-  //   // TODO: remove logging statement
-  //   req.app.locals.queue.push(dataItem);
-  // } else {
-  //   // log something if not sufficient balance
-  //   log.error(dataItem.id, ' failed because of insufficient funds with bundlr');
-  //   // respond with status code that indicates insufficient payment
-  //   res.sendStatus(402);
-  // }
 });
 
 router.get('/health', function (req, res) {
