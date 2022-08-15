@@ -33,6 +33,5 @@ jobs:
         id: build-image
         run: |
           aws ecr get-login-password | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
-          docker tag ${{ env.IMAGE_NAME }} "${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
           docker tag ${{ env.IMAGE_NAME }} "${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
-          docker push "${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          docker push "${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
