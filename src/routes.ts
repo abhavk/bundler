@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import express from 'express';
+import { PassThrough } from 'stream';
 import { DataItem } from 'arbundles';
 import { uuid } from 'uuidv4';
 import log from './logger.js';
@@ -26,12 +27,18 @@ router.post('/tx/:currency', function (req, res) {
   const tmpDataPath = path.join('/data-items/incomplete/', tmpDataName);
   const doneDataPath = path.join('/data-items/completed/', tmpDataName);
 
-  const writeStream = fs.createWriteStream(tmpDataPath);
+  const stream = new PassThrough();
 
-  req.pipe(writeStream);
+  const inMemoryChunks = [];
+  const writeStream = fs.createWriteStream(tmpDataPath);
+  stream.pipe(writeStream);
+  req.pipe(stream);
+
+  stream.on('data', (chunk) => {
+    inMemoryChunks.push(chunk);
+  });
 
   req.on('end', () => {
-    writeStream.end();
     log.info(
       'Request pipe ended successfully, moving on to dataItem validation',
     );
@@ -39,7 +46,7 @@ router.post('/tx/:currency', function (req, res) {
     let dataItem: any;
 
     try {
-      dataItem = new DataItem(fs.readFileSync(tmpDataPath));
+      dataItem = new DataItem(Buffer.from(inMemoryChunks));
     } catch (error) {
       log.error('Error creating dataItem', error);
     }
