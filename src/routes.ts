@@ -47,11 +47,7 @@ router.post('/tx/:currency', function (req, res) {
     let dataItem: any;
 
     try {
-      log.info('inMemoryChunks', { inMemoryChunks });
-      log.info('inMemoryChunks buffer:', {
-        buffer: Buffer.from(inMemoryChunks),
-      });
-      dataItem = new DataItem(Buffer.from(inMemoryChunks));
+      dataItem = new DataItem(Buffer.concat(inMemoryChunks));
     } catch (error) {
       log.error('Error creating dataItem', error);
     }
