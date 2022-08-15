@@ -1,3 +1,9 @@
+data "aws_acm_certificate" "arweave_net_certificate" {
+  domain      = "arweave.net"
+  types       = ["AMAZON_ISSUED"]
+  most_recent = true
+}
+
 resource "aws_security_group" "bundler_security_group" {
   name   = "bundler-loadbalancer"
   vpc_id = data.aws_vpc.main.id
@@ -56,10 +62,24 @@ resource "aws_lb_target_group" "bundler_tg" {
   depends_on = [aws_lb.bundler_alb]
 }
 
-resource "aws_lb_listener" "bundler_listener_https" {
+resource "aws_lb_listener" "bundler_listener_http" {
   load_balancer_arn = aws_lb.bundler_alb.arn
   port              = "80"
   protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.bundler_tg.arn
+  }
+}
+
+
+resource "aws_lb_listener" "bundler_listener_https" {
+  load_balancer_arn = aws_lb.bundler_alb.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  certificate_arn   = data.aws_acm_certificate.arweave_net_certificate.arn
+
 
   default_action {
     type             = "forward"
