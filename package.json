@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "An open source implementation of a bundling server that accepts DataItem entries (according to ANS104), bundles many DataItem entries together and sends them as a bundle to the Arweave network.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "rimraf ./dist; tsc",
     "dev": "TS_NODE_FILES=true node --experimental-specifier-resolution=node --max-old-space-size=4096 --loader ts-node/esm.mjs src/app.ts",
