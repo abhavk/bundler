@@ -20,7 +20,7 @@ final: prev: {
     '';
 
     docker = prev.dockerTools.buildLayeredImage {
-      name = "bundler";
+      name = "bundler-ecr";
       tag = "latest";
       created = "now";
        config = {
