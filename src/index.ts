@@ -1,8 +1,8 @@
 import fs from 'fs';
 import express from 'express';
 import { bundleAndSignData, createData, signers } from 'arbundles';
-import { writeBundleToArweave } from './write';
-import { txRouter } from './routes';
+import { writeBundleToArweave } from './write.js';
+import { txRouter } from './routes.js';
 import { ToadScheduler, SimpleIntervalJob, Task } from 'toad-scheduler';
 
 const bundler_wallet_path = process.argv[2];

@@ -1,5 +1,5 @@
 import express from 'express';
-import { checkAndHoldBalance } from './currencies';
+import { checkAndHoldBalance } from './currencies.js';
 import { DataItem } from 'arbundles';
 
 const router = express.Router();

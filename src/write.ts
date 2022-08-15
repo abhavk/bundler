@@ -1,4 +1,4 @@
-import Arweave from 'arweave/node';
+import Arweave from 'arweave/node/index.js';
 
 // const arweaveClient = Arweave.init({ host: 'arweave.net', port: 443, protocol: 'https' });
 const arweaveClient = Arweave.init({
