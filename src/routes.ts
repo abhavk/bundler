@@ -37,7 +37,7 @@ router.post('/tx/:currency', function (req, res) {
 
     try {
       dataItem = new DataItem(fs.readFileSync(tmpDataPath));
-    } catch (error: any) {
+    } catch (error) {
       log.error('Error creating dataItem', error);
     }
 

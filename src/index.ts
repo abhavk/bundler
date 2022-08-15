@@ -54,12 +54,12 @@ async function bundleTxnsAndSend() {
 }
 
 async function start() {
-  if (!(await fsPromises.exists('/data-items/incomplete'))) {
-    fsPromises.mkdir('/data-items/incomplete');
+  if (!fs.existsSync('/data-items/incomplete')) {
+    await fsPromises.mkdir('/data-items/incomplete');
   }
 
-  if (!(await fsPromises.exists('/data-items/completed'))) {
-    fsPromises.mkdir('/data-items/completed');
+  if (!fs.existsSync('/data-items/completed')) {
+    await fsPromises.mkdir('/data-items/completed');
   }
 
   log.info('starting bundler instance...');
