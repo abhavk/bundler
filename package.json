@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "rimraf ./dist; tsc",
-    "dev": "TS_NODE_FILES=true node --experimental-specifier-resolution=node --max-old-space-size=4096 --loader ts-node/esm.mjs src/app.ts",
+    "dev": "TS_NODE_FILES=true node --experimental-specifier-resolution=node --max-old-space-size=4096 --loader ts-node/esm.mjs src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettify": "prettier --write ."
   },
@@ -23,6 +23,7 @@
     "@types/node": "^13.13.4",
     "arbundles": "^0.6.13",
     "arweave": "^1.10.23",
+    "aws-sdk": "^2.1194.0",
     "express": "^4.17.2",
     "toad-scheduler": "^1.6.0"
   },

@@ -1,3 +1,4 @@
+import AWS from 'aws-sdk';
 import fs from 'fs';
 import express from 'express';
 import { bundleAndSignData, createData, signers } from 'arbundles';
@@ -5,11 +6,12 @@ import { writeBundleToArweave } from './write.js';
 import { txRouter } from './routes.js';
 import { ToadScheduler, SimpleIntervalJob, Task } from 'toad-scheduler';
 
-const bundler_wallet_path = process.argv[2];
-const privateKey =
-  JSON.parse(fs.readFileSync(bundler_wallet_path).toString()) || {};
+const awsSM = new AWS.SecretsManager({
+  region: 'us-east-1',
+});
 
-const signer = new signers.ArweaveSigner(privateKey);
+let signer: any;
+let privateKey: any;
 
 const app = express();
 
@@ -49,6 +51,18 @@ async function bundleTxnsAndSend() {
   }
 }
 
-console.log('Listening on port 3000');
+async function start() {
+  const sdata = await awsSM
+    .getSecretValue({ SecretId: 'bundler/wallet' })
+    .promise();
 
-app.listen(3000);
+  privateKey = JSON.parse(sdata.SecretString);
+
+  signer = new signers.ArweaveSigner(privateKey);
+}
+
+start().then(() => {
+  console.log('Listening on port 3000');
+
+  app.listen(3000);
+});
