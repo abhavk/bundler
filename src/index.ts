@@ -1,12 +1,13 @@
 import AWS from 'aws-sdk';
 import fs from 'fs';
-import fsp from 'fs/promises';
 import express from 'express';
 import log from './logger.js';
 import { bundleAndSignData, createData, signers } from 'arbundles';
 import { writeBundleToArweave } from './write.js';
 import { txRouter } from './routes.js';
 import { ToadScheduler, SimpleIntervalJob, Task } from 'toad-scheduler';
+
+const fsPromises = fs.promises;
 
 const awsSM = new AWS.SecretsManager({
   region: 'us-east-1',
@@ -55,7 +56,7 @@ async function bundleTxnsAndSend() {
 async function start() {
   log.info('starting bundler instance...');
 
-  await fsp.writeFile('/data-root/whereami.txt', 'hello world!');
+  await fsPromises.writeFile('/data-root/whereami.txt', 'hello world!');
 
   const sdata = await awsSM
     .getSecretValue({ SecretId: 'bundler/wallet' })
