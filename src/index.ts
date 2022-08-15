@@ -56,6 +56,9 @@ async function bundleTxnsAndSend() {
 async function start() {
   log.info('starting bundler instance...');
 
+  log.info('ROOT:', await fsPromises.readdir('/'));
+  log.info('DATA-ROOT:', await fsPromises.readdir('/data-root'));
+
   await fsPromises.writeFile('/data-root/whereami.txt', 'hello world!');
 
   const sdata = await awsSM
