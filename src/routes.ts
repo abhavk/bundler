@@ -26,9 +26,12 @@ router.post('/tx/:currency', function (req, res) {
   const tmpDataPath = path.join('/data-items/incomplete/', tmpDataName);
   const doneDataPath = path.join('/data-items/completed/', tmpDataName);
 
-  req.pipe(fs.createWriteStream(tmpDataPath));
+  const writeStream = fs.createWriteStream(tmpDataPath);
+
+  req.pipe(writeStream);
 
   req.on('end', () => {
+    writeStream.end();
     log.info(
       'Request pipe ended successfully, moving on to dataItem validation',
     );
