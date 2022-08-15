@@ -1,3 +1,7 @@
+locals {
+  awslogs-multiline-pattern = "^info:|^error:|^verbose:|^debug:|^warn:|^warning:"
+}
+
 resource "aws_security_group" "bundler_ecs_security_group" {
   name        = "ECS bundler Security Group"
   description = "ECS bundler Security Group"
@@ -77,6 +81,7 @@ resource "aws_ecs_task_definition" "bundler_task" {
           awslogs-group : aws_cloudwatch_log_group.bundler_cluster.name
           awslogs-region : var.region,
           awslogs-stream-prefix : "ecs",
+          awslogs-multiline-pattern : local.awslogs-multiline-pattern
         }
       }
     }

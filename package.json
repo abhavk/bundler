@@ -10,7 +10,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettify": "prettier --write ."
   },
-  "keywords": ["arweave", "bundlr"],
+  "keywords": [
+    "arweave",
+    "bundlr"
+  ],
   "author": "abhavk",
   "license": "ISC",
   "devDependencies": {
@@ -25,7 +28,8 @@
     "arweave": "^1.10.23",
     "aws-sdk": "^2.1194.0",
     "express": "^4.17.2",
-    "toad-scheduler": "^1.6.0"
+    "toad-scheduler": "^1.6.0",
+    "winston": "^3.8.1"
   },
   "overrides": {
     "avsc": "^5.7.4"

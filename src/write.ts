@@ -1,4 +1,5 @@
 import Arweave from 'arweave/node/index.js';
+import log from './logger.js';
 
 // const arweaveClient = Arweave.init({ host: 'arweave.net', port: 443, protocol: 'https' });
 const arweaveClient = Arweave.init({
@@ -28,23 +29,21 @@ const writeBundleToArweave = async (
     });
 
     await arweaveClient.transactions.sign(tx, privateKey);
-    console.log('🚀 ~ writeBundleToArweave ~ signed', tx.id);
+    log.info('🚀 ~ writeBundleToArweave ~ signed', tx.id);
     let uploader = await arweaveClient.transactions.getUploader(tx);
-    console.log(uploader);
     while (!uploader.isComplete) {
       await uploader.uploadChunk();
-      console.log(
+      log.info(
         `${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`,
       );
     }
-    console.log(
+    log.info(
       `Bundle is posted and will be mined shortly. Check status at https://viewblock.io/arweave/tx/${tx.id}`,
     );
     return tx.id;
   } catch (err) {
-    console.log('Error, bundle not posted');
-    console.log(JSON.stringify(err));
-    return null;
+    log.error('Error, bundle not posted', err);
+    return undefined;
   }
 };
 

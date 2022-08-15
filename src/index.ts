@@ -1,6 +1,7 @@
 import AWS from 'aws-sdk';
 import fs from 'fs';
 import express from 'express';
+import log from './logger.js';
 import { bundleAndSignData, createData, signers } from 'arbundles';
 import { writeBundleToArweave } from './write.js';
 import { txRouter } from './routes.js';
@@ -29,7 +30,7 @@ const job = new SimpleIntervalJob({ seconds: 5 }, task);
 scheduler.addSimpleIntervalJob(job);
 
 async function bundleTxnsAndSend() {
-  console.log('running scheduled bundlensend with queue = ', app.locals.queue);
+  log.info('running scheduled bundlensend with queue = ', app.locals.queue);
   const bundles = [];
 
   while (app.locals.queue.length > 0) {
@@ -38,31 +39,33 @@ async function bundleTxnsAndSend() {
 
   for (const listOfDataItems of bundles) {
     const bundledTxn = await bundleAndSignData(listOfDataItems, signer);
-    console.log(bundledTxn);
-    console.log(bundledTxn.get(0));
-    console.log(bundledTxn.get(0).id);
+    log.info('new bundled tx', bundledTxn);
+
     const verified = await bundledTxn.verify();
-    console.log('verified =', verified);
+    log.info(`verified = ${verified}`);
     if (verified) {
       await writeBundleToArweave(bundledTxn.getRaw(), privateKey);
     } else {
-      console.log('did not post bundle because it was not verified');
+      log.warn('did not post bundle because it was not verified');
     }
   }
 }
 
 async function start() {
+  log.info('starting bundler instance...');
   const sdata = await awsSM
     .getSecretValue({ SecretId: 'bundler/wallet' })
     .promise();
 
   privateKey = JSON.parse(sdata.SecretString);
 
+  log.info('making a signer object');
   signer = new signers.ArweaveSigner(privateKey);
+  log.info('start sequence done');
 }
 
 start().then(() => {
-  console.log('Listening on port 3000');
+  log.info('Listening on port 3000');
 
   app.listen(3000);
 });
