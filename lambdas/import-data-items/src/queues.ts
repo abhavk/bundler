@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { SQS } from 'aws-sdk';
+import AWS from 'aws-sdk';
 import { SQSEvent, SQSHandler, SQSRecord } from 'aws-lambda';
 import log from './logger.js';
 
@@ -34,7 +34,7 @@ const queues: { [key in QueueType]: SQSQueueUrl } = {
   'import-data-items': process.env.SQS_IMPORT_DATA_ITEMS_URL!,
 };
 
-const sqs = new SQS({
+const sqs = new AWS.SQS({
   maxRetries: 3,
   httpOptions: { timeout: 5000, connectTimeout: 5000 },
 });

@@ -77,6 +77,14 @@ EOF
       Statement = [
         {
           Action = [
+            "sqs:*"
+          ],
+          Effect   = "Allow",
+          Resource = "*"
+
+        },
+        {
+          Action = [
             "sts:GetCallerIdentity"
           ]
           Effect   = "Allow"

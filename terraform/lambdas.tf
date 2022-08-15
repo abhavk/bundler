@@ -46,9 +46,9 @@ resource "aws_lambda_function" "import_data_items" {
   ]
 
   function_name = "import-data_items-${each.key}"
-  handler       = "dist/import-data-items-min.handler"
+  handler       = "dist/index.handler"
   role          = aws_iam_role.lambda_job.arn
-  runtime       = "nodejs14.x"
+  runtime       = "nodejs16.x"
 
   s3_bucket = aws_s3_bucket.lambdas.id
   s3_key    = "import-data-items.zip"
