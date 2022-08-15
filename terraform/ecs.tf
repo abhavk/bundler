@@ -97,11 +97,12 @@ resource "aws_ecs_service" "bundler_service" {
 
   network_configuration {
     security_groups = [aws_security_group.bundler_ecs_security_group.id]
-    subnets         = [
+    subnets = [
       data.aws_subnet.public_1.id,
       data.aws_subnet.public_2.id,
       data.aws_subnet.public_3.id,
     ]
+    assign_public_ip = true
   }
 
   deployment_controller {

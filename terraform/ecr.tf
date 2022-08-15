@@ -26,7 +26,8 @@ resource "aws_ecr_repository_policy" "bundler_ecr_policy" {
         Effect = "Allow"
         Principal = {
           AWS = [
-            "arn:aws:iam::826136779190:root"
+            "arn:aws:iam::826136779190:root",
+            "arn:aws:iam::384386061638:root"
           ]
         }
         Action = local.default_ecr_actions

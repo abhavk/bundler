@@ -31,7 +31,7 @@ resource "aws_lb" "bundler_alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.bundler_security_group.id]
-  subnets            = [
+  subnets = [
     data.aws_subnet.public_1.id,
     data.aws_subnet.public_2.id,
     data.aws_subnet.public_3.id,

@@ -81,7 +81,7 @@ EOF
           ]
           Effect   = "Allow"
           Resource = "*"
-        }
+        },
       ]
     })
   }

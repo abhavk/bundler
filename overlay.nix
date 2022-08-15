@@ -13,6 +13,11 @@ final: prev: {
         prev.nodePackages.node-pre-gyp
         prev.sqlite
       ];
+
+      postInstall = ''
+        cp -rf dist $out
+      '';
+
     };
 
     serve = prev.writeShellScriptBin "serve" ''
