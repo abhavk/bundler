@@ -49,11 +49,12 @@ router.post('/tx/:currency', function (req, res) {
         log.info('Sufficient balance!', { currency, dataItemId: dataItem.id });
 
         fs.renameSync(tmpDataPath, doneDataPath);
-        await enqueueDataItem({
+        enqueueDataItem({
           efsDataPath: doneDataPath,
           dataItemId: dataItem.id,
+        }).then(() => {
+          res.status(201).json({ id: dataItem.id });
         });
-        res.status(201).json({ id: dataItem.id });
       } else {
         log.warn('Insufficient balance!', {
           currency,
