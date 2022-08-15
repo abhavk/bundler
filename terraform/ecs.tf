@@ -21,6 +21,21 @@ resource "aws_security_group" "bundler_ecs_security_group" {
     ]
   }
 
+  # EFS
+  ingress {
+    from_port = 2049
+    to_port   = 2049
+    protocol  = "tcp"
+    cidr_blocks = [
+      data.aws_subnet.public_1.cidr_block,
+      data.aws_subnet.public_2.cidr_block,
+      data.aws_subnet.public_3.cidr_block,
+      data.aws_subnet.public_4.cidr_block,
+      data.aws_subnet.public_5.cidr_block,
+      data.aws_subnet.public_6.cidr_block,
+    ]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -104,10 +119,12 @@ resource "aws_ecs_task_definition" "bundler_task" {
 }
 
 resource "aws_ecs_service" "bundler_service" {
-  name            = "bundler-service"
-  cluster         = aws_ecs_cluster.bundler_cluster.id
-  task_definition = aws_ecs_task_definition.bundler_task.arn
-  desired_count   = 1
+  name             = "bundler-service"
+  cluster          = aws_ecs_cluster.bundler_cluster.id
+  task_definition  = aws_ecs_task_definition.bundler_task.arn
+  platform_version = "1.4.0" //not specfying this version explictly will not currently work for mounting EFS to Fargate
+
+  desired_count = 1
 
   load_balancer {
     target_group_arn = aws_lb_target_group.bundler_tg.arn

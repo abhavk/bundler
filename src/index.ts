@@ -18,8 +18,8 @@ let privateKey: any;
 
 const app = express();
 
-app.use(express.raw({ limit: '100mb' }));
 app.use(txRouter);
+
 // initialize queue as a global variable
 app.locals.queue = [];
 
@@ -54,12 +54,15 @@ async function bundleTxnsAndSend() {
 }
 
 async function start() {
+  if (!(await fsPromises.exists('/data-items/incomplete'))) {
+    fsPromises.mkdir('/data-items/incomplete');
+  }
+
+  if (!(await fsPromises.exists('/data-items/completed'))) {
+    fsPromises.mkdir('/data-items/completed');
+  }
+
   log.info('starting bundler instance...');
-
-  log.info('ROOT:', await fsPromises.readdir('/'));
-  log.info('DATA-ROOT:', await fsPromises.readdir('/data-items'));
-
-  await fsPromises.writeFile('/data-items/whereami.txt', 'hello world!');
 
   const sdata = await awsSM
     .getSecretValue({ SecretId: 'bundler/wallet' })
