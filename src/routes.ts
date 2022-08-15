@@ -32,4 +32,8 @@ router.post('/tx/:currency', function (req, res) {
   }
 });
 
+router.get('/health', function (req, res) {
+  res.status(200).send('OK');
+});
+
 export { router as txRouter };
