@@ -35,6 +35,7 @@ router.post('/tx/:currency', function (req, res) {
   req.pipe(stream);
 
   stream.on('data', (chunk) => {
+    log.info('on steam.data', { chunk });
     inMemoryChunks.push(chunk);
   });
 
@@ -46,6 +47,10 @@ router.post('/tx/:currency', function (req, res) {
     let dataItem: any;
 
     try {
+      log.info('inMemoryChunks', { inMemoryChunks });
+      log.info('inMemoryChunks buffer:', {
+        buffer: Buffer.from(inMemoryChunks),
+      });
       dataItem = new DataItem(Buffer.from(inMemoryChunks));
     } catch (error) {
       log.error('Error creating dataItem', error);
