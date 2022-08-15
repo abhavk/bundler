@@ -1,5 +1,5 @@
 locals {
-  import_data_items_cnt = 0
+  import_data_items_cnt = 1
 }
 
 resource "aws_security_group" "lambda_security_group" {
@@ -73,6 +73,11 @@ resource "aws_lambda_function" "import_data_items" {
 
   lifecycle {
     ignore_changes = [last_modified, source_code_hash]
+  }
+
+  file_system_config {
+    arn              = aws_efs_access_point.lambda_access_point.arn
+    local_mount_path = "/mnt/data-items"
   }
 }
 

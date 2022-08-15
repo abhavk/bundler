@@ -88,7 +88,13 @@ resource "aws_ecs_task_definition" "bundler_task" {
           hostPort      = 3000
         }
       ]
-      environment = []
+
+      environment = [
+        {
+          name  = "SQS_IMPORT_DATA_ITEMS_URL",
+          value = aws_sqs_queue.import_data_items.url
+        }
+      ]
 
       logConfiguration = {
         logDriver = "awslogs",

@@ -126,12 +126,19 @@ EOF
             "sqs:*",
             "dax:*",
             "dynamodb:*",
+            "ec2:DescribeInstances",
+            "ec2:CreateNetworkInterface",
+            "ec2:AttachNetworkInterface",
+            "ec2:DescribeNetworkInterfaces",
+            "ec2:DeleteNetworkInterface",
             "secretsmanager:GetSecretValue",
             "secretsmanager:GetResourcePolicy",
             "secretsmanager:GetSecretValue",
             "secretsmanager:DescribeSecret",
             "secretsmanager:ListSecretVersionIds",
             "secretsmanager:ListSecrets",
+            "elasticfilesystem:ClientMount",
+            "elasticfilesystem:ClientWrite",
           ]
           Effect   = "Allow"
           Resource = "*"
