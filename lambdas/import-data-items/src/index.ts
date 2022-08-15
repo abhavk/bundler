@@ -8,8 +8,8 @@ interface ImportDataItem {
 
 export const handler = createQueueHandler<ImportDataItem>(
   getQueueUrl('import-data-items'),
-  async ({ header, size }) => {
-    log.info('COOL');
+  async ({ efsDataPath, dataItemId }) => {
+    log.info('COOL', { efsDataPath, dataItemId });
   },
   {
     before: async () => {},
