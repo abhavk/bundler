@@ -82,6 +82,14 @@ EOF
           Effect   = "Allow"
           Resource = "*"
         },
+        {
+          Action = [
+            "secretsmanager:GetSecretValue"
+          ],
+          Effect   = "Allow",
+          Resource = "*"
+
+        }
       ]
     })
   }

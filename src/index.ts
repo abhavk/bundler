@@ -1,5 +1,6 @@
 import AWS from 'aws-sdk';
 import fs from 'fs';
+import fsp from 'fs/promises';
 import express from 'express';
 import log from './logger.js';
 import { bundleAndSignData, createData, signers } from 'arbundles';
@@ -53,6 +54,9 @@ async function bundleTxnsAndSend() {
 
 async function start() {
   log.info('starting bundler instance...');
+
+  await fsp.writeFile('/data-root/whereami.txt', 'hello world!');
+
   const sdata = await awsSM
     .getSecretValue({ SecretId: 'bundler/wallet' })
     .promise();

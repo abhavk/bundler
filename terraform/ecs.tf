@@ -75,17 +75,32 @@ resource "aws_ecs_task_definition" "bundler_task" {
       ]
       environment = []
 
-      logConfiguration : {
-        logDriver : "awslogs",
-        options : {
-          awslogs-group : aws_cloudwatch_log_group.bundler_cluster.name
-          awslogs-region : var.region,
-          awslogs-stream-prefix : "ecs",
-          awslogs-multiline-pattern : local.awslogs-multiline-pattern
+      logConfiguration = {
+        logDriver = "awslogs",
+        options = {
+          awslogs-group             = aws_cloudwatch_log_group.bundler_cluster.name,
+          awslogs-region            = var.region,
+          awslogs-stream-prefix     = "ecs",
+          awslogs-multiline-pattern = local.awslogs-multiline-pattern
         }
-      }
+      },
+
+      mountPoints = [
+        {
+          containerPath = "/data-items",
+          sourceVolume  = "data-items"
+        }
+      ],
     }
   ])
+
+  volume {
+    name = "data-items"
+    efs_volume_configuration {
+      file_system_id = aws_efs_file_system.bundler_tmp.id
+      root_directory = "/"
+    }
+  }
 }
 
 resource "aws_ecs_service" "bundler_service" {
