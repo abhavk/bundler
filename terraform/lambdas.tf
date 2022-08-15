@@ -66,7 +66,9 @@ resource "aws_lambda_function" "import_data_items" {
   }
 
   environment {
-    variables = {}
+    variables = {
+      SQS_IMPORT_DATA_ITEMS_URL = aws_sqs_queue.import_data_items.url
+    }
   }
 
   lifecycle {

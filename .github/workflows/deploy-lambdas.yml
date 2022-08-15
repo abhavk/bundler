@@ -1,0 +1,39 @@
+name: Deploy Lambdas
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy-lambdas:
+    runs-on: self-hosted
+    env:
+      ACCOUNT_ID: '384386061638'
+      AWS_REGION: 'us-east-1'
+    steps:
+      - uses: actions/checkout@v2.4.0
+      - name: Build
+        run: |
+          cd lambdas/import-data-items
+          npm install
+          npm run build
+      - name: Upload S3
+        run: |
+          cd lambdas/import-data-items
+
+          # BOILERPLATE START #
+          export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+          export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          # BOILERPLATE END #
+
+          zip -r -y import-data-items.zip ./dist
+          aws s3 cp import-data-items.zip s3://arweave-lambda-deployments/import-data-items.zip
+
+          aws lambda update-function-code \
+            --publish \
+            --function-name import-data-items \
+            --s3-bucket arweave-lambda-deployments \
+            --s3-key import-data-items.zip
