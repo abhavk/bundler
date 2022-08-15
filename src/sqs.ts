@@ -1,4 +1,4 @@
-import { SQS } from 'aws-sdk';
+import AWS from 'aws-sdk';
 
 const queueUrl = process.env.SQS_IMPORT_DATA_ITEMS_URL!;
 
@@ -7,7 +7,7 @@ interface ImportDataItem {
   dataItemId: string;
 }
 
-const sqs = new SQS({
+const sqs = new AWS.SQS({
   maxRetries: 3,
   httpOptions: { timeout: 5000, connectTimeout: 5000 },
 });
