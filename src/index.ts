@@ -5,7 +5,7 @@ import log from './logger.js';
 import { bundleAndSignData, createData, signers } from 'arbundles';
 import { writeBundleToArweave } from './write.js';
 import { txRouter } from './routes.js';
-import { ToadScheduler, SimpleIntervalJob, Task } from 'toad-scheduler';
+// import { ToadScheduler, SimpleIntervalJob, Task } from 'toad-scheduler';
 
 const fsPromises = fs.promises;
 
@@ -23,13 +23,13 @@ app.use(txRouter);
 // initialize queue as a global variable
 app.locals.queue = [];
 
-const scheduler = new ToadScheduler();
+// const scheduler = new ToadScheduler();
 const BUNDLE_SIZE = 1000;
 
-const task = new Task('bundle n send', () => bundleTxnsAndSend());
-const job = new SimpleIntervalJob({ seconds: 5 }, task);
+// const task = new Task('bundle n send', () => bundleTxnsAndSend());
+// const job = new SimpleIntervalJob({ seconds: 5 }, task);
 
-scheduler.addSimpleIntervalJob(job);
+// scheduler.addSimpleIntervalJob(job);
 
 async function bundleTxnsAndSend() {
   log.info('running scheduled bundlensend with queue = ', app.locals.queue);
