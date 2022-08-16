@@ -22,5 +22,8 @@
     "aws-lambda": "^1.0.7",
     "aws-sdk": "^2.1195.0",
     "winston": "^3.8.1"
+  },
+  "overrides": {
+    "avsc": "^5.7.4"
   }
 }
