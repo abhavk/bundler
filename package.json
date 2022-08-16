@@ -10,15 +10,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettify": "prettier --write ."
   },
-  "keywords": [
-    "arweave",
-    "bundlr"
-  ],
+  "keywords": ["arweave", "bundlr"],
   "author": "abhavk",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^18.7.4",
-    "rimraf": "^3.0.2",
     "ts-node": "^10.9.1",
     "typescript": "^4.7.4"
   },
@@ -28,6 +24,8 @@
     "arweave": "^1.11.6",
     "aws-sdk": "^2.1194.0",
     "express": "^4.18.1",
+    "rimraf": "^3.0.2",
+    "sqs-consumer": "^5.7.0",
     "toad-scheduler": "^1.6.1",
     "uuid": "^8.3.2",
     "winston": "^3.8.1"

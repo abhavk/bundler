@@ -29,5 +29,6 @@ resource "aws_sqs_queue" "export_bundles" {
     deadLetterTargetArn = aws_sqs_queue.export_bundles_dlq.arn
     maxReceiveCount     = 4
   })
-  visibility_timeout_seconds = 720
+  # visibility_timeout_seconds = 60000 # 1 Hour retry period
+  visibility_timeout_seconds = 300 # TODO: deleteme before golive
 }

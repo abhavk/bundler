@@ -23,6 +23,7 @@
         packages.${system} = {
           bundler-package = pkgs.bundler.package;
           bundler-docker = pkgs.bundler.docker;
+          export-bundles-docker = pkgs.export-bundles.docker;
         };
       }
     );

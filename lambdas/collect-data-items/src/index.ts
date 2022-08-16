@@ -8,6 +8,8 @@ import { enqueueExportBundles } from './sqs.js';
 
 const fsPromises = fs.promises;
 
+const MAX_BUNDLE_SIZE = 1000;
+
 const jobsFolder = '/mnt/data-items/jobs';
 const unbundledFolder = '/mnt/data-items/unbundled';
 
@@ -21,7 +23,8 @@ export async function handler() {
     await fsPromises.readdir('/mnt/data-items/unbundled'),
   );
 
-  const unbundledFiles = await fsPromises.readdir(unbundledFolder);
+  const unbundledFiles_ = await fsPromises.readdir(unbundledFolder);
+  const unbundledFiles = unbundledFiles_.sort().splice(0, MAX_BUNDLE_SIZE);
 
   if (unbundledFiles.length > 0) {
     log.info(`Found ${unbundledFiles.length} unbundled data-items`);

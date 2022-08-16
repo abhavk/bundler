@@ -35,4 +35,20 @@ final: prev: {
     };
   };
 
+  export-bundles = {
+
+    # package is the same as bundler, just different entrypoint
+    start = prev.writeShellScriptBin "start" ''
+      ${prev.nodejs}/bin/node ${final.bundler.package}/dist/export-bundles/index.js
+    '';
+
+    docker = prev.dockerTools.buildLayeredImage {
+      name = "export-bundles-ecr";
+      tag = "latest";
+      created = "now";
+      config = {
+        Cmd = [ "${final.export-bundles.start}/bin/start" ];
+      };
+    };
+  };
 }
