@@ -35,11 +35,11 @@ data "aws_subnet" "private_2" {
 }
 
 resource "aws_eip" "nat_1" {
-  vpc   = true
+  vpc = true
 }
 
 resource "aws_eip" "nat_2" {
-  vpc   = true
+  vpc = true
 }
 
 resource "aws_route_table" "private_1" {
