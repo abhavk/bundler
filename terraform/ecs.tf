@@ -159,3 +159,119 @@ resource "aws_ecs_service" "bundler_service" {
   }
 
 }
+
+resource "aws_ecs_cluster" "export_bundles_cluster" {
+  name               = "export-bundles-cluster"
+  capacity_providers = ["FARGATE"]
+
+  default_capacity_provider_strategy {
+    capacity_provider = "FARGATE"
+    weight            = "100"
+  }
+
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+}
+
+resource "aws_cloudwatch_log_group" "export_bundles_cluster" {
+  name = "/ecs/export-bundles-cluster"
+}
+
+resource "aws_ecs_task_definition" "export_bundles_task" {
+  family = "export-bundles"
+
+  requires_compatibilities = [
+    "FARGATE",
+  ]
+
+  execution_role_arn = aws_iam_role.arweave_fargate.arn
+  task_role_arn      = aws_iam_role.bundler_task_role.arn
+  network_mode       = "awsvpc"
+  cpu                = 512
+  memory             = 1024
+
+  container_definitions = jsonencode([
+    {
+      name  = "export-bundles-task-definition"
+      image = "${aws_ecr_repository.export_bundles_ecr.repository_url}:latest"
+      portMappings = [
+        {
+          containerPort = 3000
+          hostPort      = 3000
+        }
+      ]
+
+      environment = [
+        {
+          name  = "SQS_IMPORT_DATA_ITEMS_URL",
+          value = aws_sqs_queue.import_data_items.url
+        },
+        {
+          name = "SQS_EXPORT_BUNDLES_URL",
+          value = aws_sqs_queue.export_bundles.url
+        },
+        {
+          name = "BUNDLER_GATEWAY_BUCKET",
+          value = module.s3-bundler-gateway-bucket.s3_bucket_id
+        }
+      ]
+
+      logConfiguration = {
+        logDriver = "awslogs",
+        options = {
+          awslogs-group             = aws_cloudwatch_log_group.export_bundles_cluster.name,
+          awslogs-region            = var.region,
+          awslogs-stream-prefix     = "ecs",
+          awslogs-multiline-pattern = local.awslogs-multiline-pattern
+        }
+      },
+
+      mountPoints = [
+        {
+          containerPath = "/data-items",
+          sourceVolume  = "data-items"
+        }
+      ],
+    }
+  ])
+
+  volume {
+    name = "data-items"
+    efs_volume_configuration {
+      file_system_id = aws_efs_file_system.bundler_tmp.id
+      root_directory = "/"
+    }
+  }
+}
+
+resource "aws_ecs_service" "export_bundles_service" {
+  name             = "export-bundles-service"
+  cluster          = aws_ecs_cluster.export_bundles_cluster.id
+  task_definition  = aws_ecs_task_definition.export_bundles_task.arn
+  platform_version = "1.4.0" //not specfying this version explictly will not currently work for mounting EFS to Fargate
+
+  desired_count = 1
+
+  network_configuration {
+    security_groups = [aws_security_group.bundler_ecs_security_group.id]
+    subnets = [
+      data.aws_subnet.public_1.id,
+      data.aws_subnet.public_2.id,
+      data.aws_subnet.public_3.id,
+    ]
+    assign_public_ip = true
+  }
+
+  deployment_controller {
+    type = "ECS"
+  }
+
+  capacity_provider_strategy {
+    base              = 0
+    capacity_provider = "FARGATE"
+    weight            = 100
+  }
+
+}

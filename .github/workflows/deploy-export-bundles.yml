@@ -1,0 +1,40 @@
+name: 'export-bundles-ecr'
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-push:
+    name: 'Build and Push to ECR'
+    runs-on: self-hosted
+    env:
+      ACCOUNT_ID: '384386061638'
+      AWS_REGION: 'us-east-1'
+      IMAGE_NAME: export-bunldes-ecr
+      ECR_REGISTRY: 384386061638.dkr.ecr.us-east-1.amazonaws.com
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Docker build
+        run: |
+          nix -L build .#x86_64-linux.export-bundles-docker
+          cat result | docker load
+
+      - name: Docker login, tag and push image
+        id: build-image
+        run: |
+          aws ecr get-login-password | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
+          docker tag ${{ env.IMAGE_NAME }} "${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+          docker push "${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
