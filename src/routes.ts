@@ -30,7 +30,7 @@ router.post('/tx/:currency', function (req, res) {
     inMemoryChunks.push(chunk);
   });
 
-  req.on('end', () => {
+  req.on('end', async () => {
     log.info(
       'Request pipe ended successfully, moving on to dataItem validation',
     );
@@ -43,18 +43,32 @@ router.post('/tx/:currency', function (req, res) {
       log.error('Error creating dataItem', error);
     }
 
+    let isValidDataItem = false;
+
     if (dataItem) {
+      try {
+        isValidDataItem = await DataItem.verify(dataItem.binary);
+      } catch (error) {
+        log.error(`couldn't verify DataItem`, {
+          error,
+          currency,
+          dataItemId: dataItem.id,
+        });
+      }
+      log.info('debug, isValidDataItem', { isValidDataItem });
+    }
+
+    if (dataItem && isValidDataItem) {
       const sufficient = checkAndHoldBalance(currency, dataItem);
       if (sufficient) {
         log.info('Sufficient balance!', { currency, dataItemId: dataItem.id });
 
         fs.renameSync(tmpDataPath, doneDataPath);
-        enqueueDataItem({
+        await enqueueDataItem({
           efsDataPath: doneDataPath,
           dataItemId: dataItem.id,
-        }).then(() => {
-          res.status(201).json({ id: dataItem.id });
         });
+        res.status(201).json({ id: dataItem.id });
       } else {
         log.warn('Insufficient balance!', {
           currency,
