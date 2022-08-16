@@ -17,7 +17,11 @@ jobs:
       - uses: actions/checkout@v2.4.0
       - name: Build
         run: |
-          cd lambdas/import-data-items
+          export ROOTDIR=$(pwd)
+          cd $ROOTDIR/lambdas/import-data-items
+          npm install
+          npm run build
+          cd $ROOTDIR/lambdas/collect-data-items
           npm install
           npm run build
       - name: Upload S3
