@@ -50,4 +50,13 @@ jobs:
                 --s3-bucket arweave-lambda-deployments \
                 --s3-key import-data-items.zip
             fi
+
+            if [[ $l =~ ^collect\-data.* ]];
+            then
+              aws lambda update-function-code \
+                --publish \
+                --function-name $l \
+                --s3-bucket arweave-lambda-deployments \
+                --s3-key collect-data-items.zip
+            fi
           done
