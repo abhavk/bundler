@@ -65,7 +65,7 @@ router.post('/tx/:currency', function (req, res) {
 
         fs.renameSync(tmpDataPath, doneDataPath);
         await enqueueDataItem({
-          efsDataPath: doneDataPath,
+          efsEntity: tmpDataName,
           dataItemId: dataItem.id,
         });
         res.status(201).json({ id: dataItem.id });

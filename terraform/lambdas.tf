@@ -92,6 +92,7 @@ resource "aws_lambda_function" "import_data_items" {
   environment {
     variables = {
       SQS_IMPORT_DATA_ITEMS_URL = aws_sqs_queue.import_data_items.url
+      BUNDLER_GATEWAY_BUCKET = module.s3-bundler-gateway-bucket.s3_bucket_id
     }
   }
 

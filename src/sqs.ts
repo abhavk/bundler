@@ -3,7 +3,7 @@ import AWS from 'aws-sdk';
 const queueUrl = process.env.SQS_IMPORT_DATA_ITEMS_URL!;
 
 interface ImportDataItem {
-  efsDataPath: string;
+  efsEntity: string;
   dataItemId: string;
 }
 
