@@ -70,7 +70,7 @@ resource "aws_lambda_function" "import_data_items" {
     aws_cloudwatch_log_group.import_data_items
   ]
 
-  function_name = "import-data_items-${each.key}"
+  function_name = "import-data-items-${each.key}"
   handler       = "dist/index.handler"
   role          = aws_iam_role.lambda_job.arn
   runtime       = "nodejs16.x"
