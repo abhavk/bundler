@@ -18,6 +18,8 @@ resource "aws_security_group" "lambda_security_group" {
       data.aws_subnet.public_4.cidr_block,
       data.aws_subnet.public_5.cidr_block,
       data.aws_subnet.public_6.cidr_block,
+      data.aws_subnet.private_1.cidr_block,
+      data.aws_subnet.private_2.cidr_block,
     ]
   }
 
@@ -58,9 +60,8 @@ resource "aws_lambda_function" "import_data_items" {
 
   vpc_config {
     subnet_ids = [
-      data.aws_subnet.public_1.id,
-      data.aws_subnet.public_2.id,
-      data.aws_subnet.public_3.id,
+      data.aws_subnet.private_1.id,
+      data.aws_subnet.private_2.id,
     ]
     security_group_ids = [aws_security_group.lambda_security_group.id]
   }

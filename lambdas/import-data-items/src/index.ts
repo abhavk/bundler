@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { enqueue, getQueueUrl, createQueueHandler } from './queues.js';
 import log from './logger.js';
 
@@ -10,6 +11,7 @@ export const handler = createQueueHandler<ImportDataItem>(
   getQueueUrl('import-data-items'),
   async ({ efsDataPath, dataItemId }) => {
     log.info('COOL', { efsDataPath, dataItemId });
+    log.info('/mnt/data-items', await fs.promises.readdir('/mnt/data-items'));
   },
   {
     before: async () => {},
