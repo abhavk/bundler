@@ -14,7 +14,7 @@ jobs:
     env:
       ACCOUNT_ID: '384386061638'
       AWS_REGION: 'us-east-1'
-      IMAGE_NAME: export-bunldes-ecr
+      IMAGE_NAME: export-bundles-ecr
       ECR_REGISTRY: 384386061638.dkr.ecr.us-east-1.amazonaws.com
     steps:
       - name: Checkout
