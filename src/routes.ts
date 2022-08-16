@@ -3,7 +3,7 @@ import path from 'path';
 import express from 'express';
 import { PassThrough } from 'stream';
 import { DataItem } from 'arbundles';
-import { uuid } from 'uuidv4';
+import { v4 as uuid } from 'uuid';
 import log from './logger.js';
 import { checkAndHoldBalance } from './currencies.js';
 import { enqueueDataItem } from './sqs.js';

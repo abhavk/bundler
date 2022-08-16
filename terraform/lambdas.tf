@@ -1,5 +1,5 @@
 locals {
-  import_data_items_cnt  = 1
+  import_data_items_cnt = 1
   environment_variables = {
     SQS_IMPORT_DATA_ITEMS_URL = aws_sqs_queue.import_data_items.url
     SQS_EXPORT_BUNDLES_URL    = aws_sqs_queue.export_bundles.url
