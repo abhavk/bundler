@@ -71,3 +71,13 @@ resource "aws_route" "private_2" {
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.nat_gw_2.id
 }
+
+resource "aws_route_table_association" "private_1" {
+  subnet_id      = data.aws_subnet.private_1.id
+  route_table_id = aws_route_table.private_1.id
+}
+
+resource "aws_route_table_association" "private_2" {
+  subnet_id      = data.aws_subnet.private_2.id
+  route_table_id = aws_route_table.private_2.id
+}
