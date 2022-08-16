@@ -31,15 +31,15 @@ resource "aws_efs_access_point" "lambda_access_point" {
     path = "/"
 
     creation_info {
-      owner_gid   = 1001
-      owner_uid   = 1001
+      owner_gid   = 1000
+      owner_uid   = 1000
       permissions = "755"
     }
   }
 
   posix_user {
-    uid = 1001
-    gid = 1001
+    uid = 1000
+    gid = 1000
   }
 
   tags = {

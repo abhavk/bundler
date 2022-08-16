@@ -43,7 +43,7 @@ export const handler = createQueueHandler<ImportDataItem>(
       .upload({
         Key: dataItem.id,
         Bucket: bucket,
-        Body: (dataItem as any).binary,
+        Body: (dataItem as any).rawData,
         ContentType: contentType,
       })
       .promise();
