@@ -96,11 +96,19 @@ async function messageHandler(message: any) {
     ),
   );
 
-  const listOfDataItems = listOfDataItems_.map(
-    (buffer: Buffer) => new DataItem(buffer),
-  );
+  const listOfDataItems = listOfDataItems_.map((buffer: Buffer) => {
+    const d = new DataItem(buffer);
+    d.id = d.id;
+    return d;
+  });
 
   const bundledTx = await bundleAndSignData(listOfDataItems, signer);
+
+  const isValid = await bundledTx.verify();
+
+  if (!isValid) {
+    throw new Error(`Coudln't verify bundle!`);
+  }
 
   const tx = await arweaveClient.createTransaction(
     { data: bundledTx.getRaw() },
