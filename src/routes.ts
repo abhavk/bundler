@@ -96,4 +96,8 @@ router.get('/health', function (req, res) {
   res.status(200).send('OK');
 });
 
+router.get('*', function (req, res) {
+  res.status(404).send('not found');
+});
+
 export { router as txRouter };
