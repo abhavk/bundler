@@ -2,11 +2,16 @@ import express from 'express';
 import { checkAndHoldBalance } from './currencies';
 import { DataItem } from "arbundles";
 const router = express.Router();
-
+const { Console } = require("console");
+const fs = require("fs");
+const bundlelogger = new Console({
+  stdout: fs.createWriteStream("normalStdout.txt"),
+  stderr: fs.createWriteStream("errStdErr.txt"),
+});
 
 router.post(
   '/tx/:currency',
-  function(req, res) {
+  async function(req, res) {
   // TODO: remove This log
   console.log("REQUEST RECEIVED!");
   // Get currency from request parameter
@@ -14,8 +19,16 @@ router.post(
   const currency = req.params.currency;
   console.log("currency used = ", currency);
   // check if currency stored with bundlr is sufficient
-  const dataItem = new DataItem(req.body);
+  const dataItem:any = new DataItem(req.body);
   console.log(dataItem);
+  const validItem = await DataItem.verify(dataItem.binary);
+  if (validItem) {
+	console.log("Item VALID!")
+  } else {
+  	res.sendStatus(400);
+	console.log("Item INVALID!");
+	return;
+  }
   dataItem.id = dataItem.id;
   const sufficient = checkAndHoldBalance(currency, dataItem);
   if (sufficient) {

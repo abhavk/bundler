@@ -9,6 +9,12 @@ const { ToadScheduler, SimpleIntervalJob, Task } = require('toad-scheduler');
 const bundler_wallet_path = process.argv[2];
 var privateKey = JSON.parse(fs.readFileSync(bundler_wallet_path))
 const signer = new signers.ArweaveSigner(privateKey);
+const { Console } = require("console");
+const console = new Console({
+  stdout: fs.createWriteStream("normalStdout.txt"),
+  stderr: fs.createWriteStream("errStdErr.txt"),
+});
+
 
 app.use(express.raw({limit:"100mb"}))
 app.use(txRouter)
@@ -47,10 +53,10 @@ scheduler.addSimpleIntervalJob(job)
 // });
 
 function bundleTxnsAndSend() {
-  console.log("running scheduled bundlensend with queue = ", app.locals.queue);
   const bundles = [];
   while (!(app.locals.queue.length==0)) {
-    bundles.push(app.locals.queue.splice(0,BUNDLE_SIZE));
+    	console.log("found items in bundle queue! ");
+	bundles.push(app.locals.queue.splice(0,BUNDLE_SIZE));
   }
 
   bundles.forEach(async (listOfDataItems) => {

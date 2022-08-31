@@ -24,6 +24,7 @@ const writeBundleToArweave = async (bundle: Buffer, privateKey, tags?: Array<any
             console.log(`${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`);
         }
         console.log(`Bundle is posted and will be mined shortly. Check status at https://viewblock.io/arweave/tx/${tx.id}`);
+	await arweaveClient.api.get("mine");
         return tx.id
     }
     catch (err) {
